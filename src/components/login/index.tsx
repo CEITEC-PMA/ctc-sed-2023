@@ -53,7 +53,7 @@ export default function LoginPage() {
     setOpen(false);
   };
 
-  const handleCloseSnack = (
+  const handleCloseSnack = async (
     event: React.SyntheticEvent | Event,
     reason?: string
   ) => {
@@ -61,7 +61,25 @@ export default function LoginPage() {
       return;
     }
     setOpenSnack(false);
-    router.push("/dashboard");
+
+    try {
+      const response = await fetch(`${apiUrl}/api/v1/zona`, {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
+        },
+        body: JSON.stringify({ password }),
+      });
+      console.log(response.body); //verificar o password da requisicao
+      if (response.status === 200) {
+        router.push("/dashboard");
+      } else {
+        throw new Error("Erro ao atualizar a senha");
+      }
+    } catch (error) {
+      console.error("Erro ao atualizar a senha:", error);
+    }
   };
 
   const handlePasswordChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -116,6 +134,8 @@ export default function LoginPage() {
             if (response.status === 200) {
               const resJson = await response.json();
               if (resJson.usuario.acesso === 0) {
+                const token = resJson.usuario.token;
+                localStorage.setItem("token", token);
                 handleOpenDialog();
               } else {
                 const token = resJson.usuario.token;
@@ -229,7 +249,9 @@ export default function LoginPage() {
             </DialogContent>
             <DialogActions>
               <Button onClick={handleCloseDialog}>Cancelar</Button>
-              <Button onClick={handleResetPassword}>Enviar</Button>
+              <Button variant="contained" onClick={handleResetPassword}>
+                Enviar
+              </Button>
             </DialogActions>
           </Dialog>
           <Snackbar
