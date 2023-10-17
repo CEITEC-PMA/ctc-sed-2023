@@ -96,12 +96,12 @@ export const documentsList = [
   },
   {
     id: 20,
-    name: "Parecer da Comissão Eleitoral Local",
+    name: "Cópia do checklist físico devidamente assinado",
     categoria: "doc_20",
   },
   {
     id: 21,
-    name: "Cópia do checklist físico devidamente assinado",
+    name: "Parecer da Comissão Eleitoral Local",
     categoria: "doc_21",
   },
 ];
