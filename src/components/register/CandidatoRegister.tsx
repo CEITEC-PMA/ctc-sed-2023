@@ -51,6 +51,7 @@ export default function CandidatoRegister({ id }: { id: string }) {
   } as unknown as Candidato);
   const [token, setToken] = useState("" as string | null);
   const router = useRouter();
+  const [fotoCandidato, setFotoCandidato] = useState("");
 
   const onSubmit: SubmitHandler<CandidatoInputs> = async (data) => {
     const response = await fetch(
@@ -90,6 +91,12 @@ export default function CandidatoRegister({ id }: { id: string }) {
   }, [id, token]);
 
   useEffect(() => {
+    setFotoCandidato(candidato.foto[0]);
+  }, [candidato.foto]);
+
+  // console.log(candidato.foto);
+
+  useEffect(() => {
     if (candidato.nome) {
       setValue("nome", candidato.nome);
       setValue("cpf", candidato.cpf);
@@ -126,7 +133,9 @@ export default function CandidatoRegister({ id }: { id: string }) {
           method: "PUT",
           body: formData,
         }
-      ).then(() => {
+      ).then(async (res) => {
+        const resJSON = await res.json();
+        setFotoCandidato(resJSON.candidato.foto[0]);
         router.refresh();
       });
     }
@@ -185,7 +194,7 @@ export default function CandidatoRegister({ id }: { id: string }) {
             {cpfSemTraco && (
               <Avatar
                 alt="User"
-                src={`${apiUrl}/fotosCandidato/${cpfSemTraco}/${candidato.foto[0]}`}
+                src={`${apiUrl}/fotosCandidato/${cpfSemTraco}/${fotoCandidato}`}
                 sx={{
                   width: { xs: 85, sm: 130, md: 150, lg: 175 },
                   height: { xs: 85, sm: 130, md: 150, lg: 175 },
