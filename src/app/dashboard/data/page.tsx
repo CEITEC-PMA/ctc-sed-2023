@@ -51,13 +51,16 @@ export default function DataTable() {
           >
             <DeleteIcon />
           </IconButton>
-          {/* <IconButton
-            color="primary"
-            onClick={(event) => handleValidar(event, params.row._id)}
-            title="Analisar"
-          >
-            <CheckCircleIcon />
-          </IconButton> */}
+
+          {user.role?.includes("super-adm") && (
+            <IconButton
+              color="primary"
+              onClick={(event) => handleValidar(event, params.row._id)}
+              title="Analisar"
+            >
+              <CheckCircleIcon />
+            </IconButton>
+          )}
         </div>
       ),
     },
