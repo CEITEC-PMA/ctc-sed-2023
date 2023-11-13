@@ -21,6 +21,8 @@ export default function LiberaVoto() {
   const [liberaAluno, setLiberaAluno] = useState(false);
   const [liberafuncionario, setLiberaFuncionario] = useState(false);
   const [busca, setBusca] = useState("");
+  const [showStudant, setShowStudant] = useState(true)
+  const [showEmployee, setShowEmpoloyee] = useState(true)
 
   const { user } = useUserContext();
   const router = useRouter();
@@ -67,6 +69,8 @@ export default function LiberaVoto() {
     console.log("clicou");
     setLiberaAluno(true);
     setLiberaFuncionario(false);
+    setShowEmpoloyee(false)
+    setShowStudant(true)
   };
 
   const dadosAlunos = alunos.find((aluno) => aluno.nome === busca);
@@ -74,6 +78,8 @@ export default function LiberaVoto() {
   const handleFuncionario = () => {
     setLiberaFuncionario(true);
     setLiberaAluno(false);
+    setShowStudant(false)
+    setShowEmpoloyee(true)
   };
 
   const dadosFuncionarios = funcionarios.find(
@@ -153,7 +159,7 @@ export default function LiberaVoto() {
         </Box>
       </Box>
 
-      {dadosAlunos && (
+      {dadosAlunos && showStudant && (
         <Box
           display="flex"
           flexDirection="column"
@@ -185,8 +191,8 @@ export default function LiberaVoto() {
                   {!dadosAlunos.votante
                     ? "ALUNO(A) NÃO PODE VOTAR!"
                     : dadosAlunos.aluno_votou
-                    ? "ALUNO(A) JÁ VOTOU!"
-                    : undefined}
+                      ? "ALUNO(A) JÁ VOTOU!"
+                      : undefined}
                 </Typography>
               </Box>
             </Box>
@@ -263,7 +269,7 @@ export default function LiberaVoto() {
         </Box>
       )}
 
-      {dadosFuncionarios && (
+      {dadosFuncionarios && showEmployee && (
         <Box display="flex" flexDirection="column" alignItems="center">
           <Typography>NOME: {dadosFuncionarios?.nome}</Typography>
 
