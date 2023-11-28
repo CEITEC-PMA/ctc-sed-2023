@@ -21,4 +21,5 @@ export interface VotosAlunosClass {
   candidato_dois: number;
   branco: number;
   nulo: number;
+  [key: string]: number;
 }

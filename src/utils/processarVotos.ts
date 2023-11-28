@@ -152,8 +152,6 @@ const resultadoFinal = (qtdeVotos: ResultadoVoto) => {
     initialValue
   );
 
-  let totalSoma = false;
-
   if (somaPercentualCandidatos <= 50) {
     candidatoApto = false;
     motivosIndeferimento.push({
