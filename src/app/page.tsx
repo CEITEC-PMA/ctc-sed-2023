@@ -1,12 +1,12 @@
-import Login from "@/components/login";
 import React from "react";
 import AppBarLogin from "@/components/dashboard/AppBarLogin";
+import LoginPage from "@/components/login/LoginPage";
 
 export default function Home() {
   return (
     <div>
       <AppBarLogin />
-      <Login />
+      <LoginPage />
     </div>
   );
 }

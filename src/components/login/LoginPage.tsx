@@ -13,6 +13,7 @@ import { useRouter } from "next/navigation";
 import { apiUrl } from "@/utils/api";
 import { useState } from "react";
 import {
+  CircularProgress,
   Dialog,
   DialogActions,
   DialogContent,
@@ -23,6 +24,8 @@ import {
 } from "@mui/material";
 import MuiAlert, { AlertProps } from "@mui/material/Alert";
 import { signIn } from "next-auth/react";
+import { useUserContext } from "@/userContext";
+import Link from "next/link";
 
 export default function LoginPage() {
   const [open, setOpen] = React.useState(false);
@@ -35,11 +38,14 @@ export default function LoginPage() {
   const [password, setPassword] = useState("");
   const [rePassword, setRePassword] = useState("");
   const [passwordsMatch, setPasswordsMatch] = useState(true);
+  const { user, setUser } = useUserContext();
+  const [loading, setLoading] = useState(false);
 
   React.useEffect(() => {
-    const token = localStorage.getItem("token");
-    if (typeof token === "string") setToken(token);
-  }, []);
+    if (user?._id) {
+      router.push("/dashboard");
+    }
+  }, [user, router]);
 
   const Alert = React.forwardRef<HTMLDivElement, AlertProps>(function Alert(
     props,
@@ -87,16 +93,23 @@ export default function LoginPage() {
 
   const handleResetPassword = async () => {
     if (password.length >= 6 && password === rePassword) {
-      await fetch(`${apiUrl}/api/v1/zona/`, {
+      await fetch(`${apiUrl}/api/v1/usuarios/`, {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",
           Authorization: `Bearer ${token}`,
         },
         body: JSON.stringify({ password }),
-      }).then(() => {
-        localStorage.setItem("token", token);
-        router.push("/dashboard");
+      }).then(async (response) => {
+        if (response.ok) {
+          const resJson = await response.json();
+          const newToken = resJson.usuario.token;
+          localStorage.setItem("token", newToken);
+          setUser(resJson.usuario);
+          router.push("/dashboard");
+        } else {
+          // Handle error
+        }
       });
     } else {
     }
@@ -104,23 +117,27 @@ export default function LoginPage() {
 
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
+    setLoading(true);
     const data = new FormData(event.currentTarget);
     const dataToSend = {
-      inep: data.get("inep"),
+      credential: data.get("credential"),
       password: data.get("senha"),
     };
-    const { password, inep } = dataToSend;
-    if (!inep) {
-      setErrorMessage("Por favor digite o número do INEP");
+    const { password, credential } = dataToSend;
+    if (!credential) {
+      setErrorMessage("Por favor digite o número do CPF ou INEP");
       setOpen(true);
+      setLoading(false);
     }
     if (!password) {
       setErrorMessage("Por favor digite uma senha");
       setOpen(true);
+      setLoading(false);
     } else {
       if (password.length < 6) {
         setErrorMessage("a senha deve ter pelo menos 6 caracteres");
         setOpen(true);
+        setLoading(false);
       } else {
         const response = await fetch(`${apiUrl}/api/v1/usuarios/login`, {
           method: "POST",
@@ -139,16 +156,17 @@ export default function LoginPage() {
               } else {
                 const token = resJson.usuario.token;
                 localStorage.setItem("token", token);
-                router.push("/dashboard");
+                setUser(resJson.usuario);
               }
             } else if (response.status === 401) {
-              throw new Error("Inep ou Senha Inválidos");
+              throw new Error("CPF/Iep ou Senha Inválidos");
             }
           })
           .catch((error) => {
             setErrorMessage(error.message);
             setOpen(true);
-          });
+          })
+          .finally(() => setLoading(false));
       }
     }
   };
@@ -187,11 +205,12 @@ export default function LoginPage() {
             margin="normal"
             required
             fullWidth
-            name="inep"
-            label="INEP"
+            name="credential"
+            label="CPF ou INEP"
             type="tel"
-            id="inep"
-            autoComplete="inep"
+            id="credential"
+            autoComplete="credential"
+            disabled={loading}
           />
           <TextField
             margin="normal"
@@ -202,15 +221,32 @@ export default function LoginPage() {
             type="password"
             id="senha"
             autoComplete="senha-atual"
+            disabled={loading}
           />
           <Button
             type="submit"
             fullWidth
             variant="contained"
             sx={{ mt: 3, mb: 2 }}
+            disabled={loading}
           >
-            Enviar
+            {loading ? <CircularProgress size={24} /> : "Enviar"}
           </Button>
+
+          <Typography variant="body2" textAlign="center">
+            Não tem uma conta?{" "}
+            <Link
+              href="/register"
+              style={{
+                textDecoration: "none",
+                color: "inherit",
+                fontWeight: "bold",
+              }}
+            >
+              Cadastre-se
+            </Link>
+          </Typography>
+
           <Dialog open={openDialog} onClose={handleCloseDialog}>
             <DialogTitle>Redefina a sua senha</DialogTitle>
             <DialogContent>

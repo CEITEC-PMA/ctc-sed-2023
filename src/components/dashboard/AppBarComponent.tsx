@@ -10,6 +10,7 @@ import { useRouter } from "next/navigation";
 import Image from "next/image";
 import { apiUrl } from "@/utils/api";
 import { useUserContext } from "@/userContext";
+import Link from "next/link";
 
 interface AppBarProps extends MuiAppBarProps {
   open?: boolean;
@@ -30,29 +31,14 @@ export default function AppBarComponent({
   const router = useRouter();
 
   useEffect(() => {
-    const token = localStorage.getItem("token");
-    if (!token) {
-      router.push("/login");
-    } else {
-      //fetch
-      const getDadosUser = async () => {
-        const response = await fetch(`${apiUrl}/api/v1/usuarios`, {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        });
-        const resJson = await response.json();
-        // console.log(resJson);
-        setUser(resJson.usuario);
-        return response;
-      };
-      getDadosUser();
+    if (!user?._id) {
+      router.push("/");
     }
-  }, [router, setUser]);
+  }, [user, router]);
 
   const handleOnClick = () => {
     localStorage.removeItem("token");
-    router.push("/");
+    setUser({} as any);
   };
 
   const AppBar = styled(MuiAppBar, {
@@ -94,22 +80,26 @@ export default function AppBarComponent({
         >
           <MenuIcon />
         </IconButton>
-        <Typography
-          component="h1"
-          variant="h6"
-          color="inherit"
-          noWrap
-          sx={{ flexGrow: 1 }}
+        <Link
+          href="/dashboard"
+          style={{ textDecoration: "none", color: "inherit" }}
         >
-          Sistema de Eleição de Diretores
-        </Typography>
+          <Typography
+            component="h1"
+            variant="h6"
+            color="inherit"
+            noWrap
+            sx={{ flexGrow: 1 }}
+          >
+            Sistema de Eleição de Diretores
+          </Typography>
+        </Link>
+
         <div>
           <Image
             width={320}
             height={55}
-            src={
-              "https://portaleducacao.anapolis.go.gov.br/portal/wp-content/uploads/2021/04/LOGO-SECRETARIA-EDUCACAO-1.png"
-            }
+            src={"https://api.anapolis.go.gov.br/apiupload/sed/educacao.png"}
             alt="Logo"
           />
         </div>

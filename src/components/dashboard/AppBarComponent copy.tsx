@@ -91,9 +91,7 @@ export default function AppBarComponent({
             <Image
               width={320}
               height={55}
-              src={
-                "https://portaleducacao.anapolis.go.gov.br/portal/wp-content/uploads/2021/04/LOGO-SECRETARIA-EDUCACAO-1.png"
-              }
+              src={"https://api.anapolis.go.gov.br/apiupload/sed/educacao.png"}
               alt="Logo"
             />
           </Grid>

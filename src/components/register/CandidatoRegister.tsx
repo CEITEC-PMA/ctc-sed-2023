@@ -2,7 +2,8 @@
 import { useForm, SubmitHandler } from "react-hook-form";
 import FormBuilder from "../form/FormBuilder";
 import { registerDTOs } from "@/utils/dtos/registerDTOs";
-import { Avatar, Button, Grid, Paper, Typography } from "@mui/material";
+import { Avatar, Button, Paper, Typography } from "@mui/material";
+import { Grid } from "@mui/material";
 import CloudUploadIcon from "@mui/icons-material/CloudUpload";
 import { styled } from "@mui/material/styles";
 import { ChangeEvent, useEffect, useState } from "react";
@@ -163,70 +164,49 @@ export default function CandidatoRegister({ id }: { id: string }) {
   };
 
   return (
-    <Paper elevation={2}>
-      <Grid
-        container
-        justifyContent="center"
-        alignItems="center"
-        bgcolor="#fff"
-        sx={{ minHeight: "100vh" }}
-      >
-        <Grid item container>
-          <Grid
-            item
-            sx={{
-              display: "flex",
-              justifyContent: "center",
-              alignItems: "center",
-              marginTop: "16px",
-              marginBottom: "8px",
-            }}
-            xs={12}
-          >
-            <Typography variant="h4" textAlign="center">
-              Cadastro de candidato
-            </Typography>
-          </Grid>
-          <Grid
-            item
-            sx={{
-              display: "flex",
-              flexDirection: "column",
-              justifyContent: "center",
-              alignItems: "center",
-              marginBottom: "8px",
-            }}
-            xs={12}
-          >
-            {cpfSemTraco && (
-              <Avatar
-                alt="User"
-                src={`${apiUrl}/fotosCandidato/${cpfSemTraco}/${fotoCandidato}`}
-                sx={{
-                  width: { xs: 85, sm: 130, md: 150, lg: 175 },
-                  height: { xs: 85, sm: 130, md: 150, lg: 175 },
-                  display: "flex",
-                  justifyContent: "center",
-                  alignItems: "center",
-                  marginBottom: "10px",
-                }}
-              />
-            )}
-
-            <Button
-              component="label"
-              variant="contained"
-              startIcon={<CloudUploadIcon />}
-            >
-              Foto do candidato
-              <VisuallyHiddenInput
-                onChange={(e) => handleOnChange(e)}
-                type="file"
-              />
-            </Button>
-          </Grid>
+    <Paper elevation={2} sx={{ p: { xs: 2, md: 4 }, m: { xs: 1, md: 2 } }}>
+      <Grid container spacing={4} justifyContent="center">
+        <Grid item xs={12}>
+          <Typography variant="h4" textAlign="center">
+            Formulário de Inscrição de Candidato
+          </Typography>
         </Grid>
-        <Grid item xs={12} sm={12}>
+
+        <Grid
+          item
+          xs={12}
+          sx={{
+            display: "flex",
+            flexDirection: "column",
+            alignItems: "center",
+            gap: 2,
+          }}
+        >
+          {cpfSemTraco && (
+            <Avatar
+              alt="User"
+              src={`${apiUrl}/fotosCandidato/${cpfSemTraco}/${fotoCandidato}`}
+              sx={{
+                width: { xs: 120, sm: 150, md: 175 },
+                height: { xs: 120, sm: 150, md: 175 },
+              }}
+            />
+          )}
+
+          <Button
+            component="label"
+            variant="contained"
+            startIcon={<CloudUploadIcon />}
+          >
+            Foto do candidato
+            <VisuallyHiddenInput
+              onChange={(e) => handleOnChange(e)}
+              type="file"
+            />
+          </Button>
+        </Grid>
+
+        <Grid item xs={12} md={8}>
           <FormBuilder formBuilderDTO={formBuilderDTO} />
         </Grid>
       </Grid>

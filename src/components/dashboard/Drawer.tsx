@@ -1,7 +1,7 @@
-import { Divider, IconButton, List, Toolbar, styled } from "@mui/material";
+import { Divider, IconButton, List, Toolbar, styled, ListItemButton, ListItemIcon, ListItemText, Icon } from "@mui/material";
 import MuiDrawer from "@mui/material/Drawer";
 import ChevronLeftIcon from "@mui/icons-material/ChevronLeft";
-import { PersonAddAlt1, AccountBox } from "@mui/icons-material";
+import { PersonAddAlt1, AccountBox } from "@mui/icons-material/";
 import PersonIcon from "@mui/icons-material/Person";
 import RotateLeftIcon from "@mui/icons-material/RotateLeft";
 import ListItems from "./listItems";
@@ -16,6 +16,8 @@ import DescriptionIcon from "@mui/icons-material/Description";
 import BadgeIcon from "@mui/icons-material/Badge";
 import { usePathname } from "next/navigation";
 import Unauthorized from "../unauthorized";
+import React, { useState } from "react";
+import ResetPasswordDialog from "./ResetPasswordDialog";
 
 //import { mainListItems } from "./ListItems";
 interface DrawerProps {
@@ -31,6 +33,16 @@ export default function DrawerComponent({
 }: DrawerProps) {
   const { user } = useUserContext();
   const pathname = usePathname();
+  const [resetDialogOpen, setResetDialogOpen] = useState(false);
+
+  const handleOpenResetDialog = () => {
+    setResetDialogOpen(true);
+  };
+
+  const handleCloseResetDialog = () => {
+    setResetDialogOpen(false);
+  };
+
   const Drawer = styled(MuiDrawer, {
     shouldForwardProp: (prop) => prop !== "open",
   })(({ theme, open }) => ({
@@ -57,7 +69,7 @@ export default function DrawerComponent({
     },
   }));
 
-  const isBeforeDeadline = useTimeCheck();
+  // const isBeforeDeadline = useTimeCheck();
 
   return (
     <Drawer variant="permanent" open={open}>
@@ -77,14 +89,21 @@ export default function DrawerComponent({
       <Divider />
 
       <List component="nav">
-        {isBeforeDeadline && (
+        {/* {isBeforeDeadline && (
           <ListItems
             label="Registrar Candidato"
             icon={<PersonAddAlt1 />}
             to="/dashboard/candidato/register"
             isActive={pathname === "/dashboard/candidato/register"}
           />
-        )}
+        )} */}
+
+        <ListItems
+          label="Registrar Candidato"
+          icon={<PersonAddAlt1 />}
+          to="/dashboard/candidato/register"
+          isActive={pathname === "/dashboard/candidato/register"}
+        />
 
         <ListItems
           label="Liberar voto"
@@ -170,14 +189,15 @@ export default function DrawerComponent({
         )}
 
         {user.role?.includes("super-adm") && (
-          <ListItems
-            label="Redefinição de senha"
-            icon={<RotateLeftIcon />}
-            to="/dashboard/settings"
-            isActive={pathname === "/dashboard/settings"}
-          />
+           <ListItemButton onClick={handleOpenResetDialog}>
+            <ListItemIcon>
+              <Icon><RotateLeftIcon /></Icon>
+            </ListItemIcon>
+            <ListItemText primary="Redefinição de senha" />
+          </ListItemButton>
         )}
       </List>
+      <ResetPasswordDialog open={resetDialogOpen} handleClose={handleCloseResetDialog} />
     </Drawer>
   );
 }

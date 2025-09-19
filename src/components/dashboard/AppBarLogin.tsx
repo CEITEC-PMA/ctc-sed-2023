@@ -3,6 +3,8 @@ import AppBar from "@mui/material/AppBar";
 import Toolbar from "@mui/material/Toolbar";
 import Typography from "@mui/material/Typography";
 import Image from "next/image";
+import Button from "@mui/material/Button";
+import Link from "next/link";
 
 const appBarStyle = {
   backgroundColor: "#0f4c81",
@@ -11,6 +13,7 @@ const appBarStyle = {
 const containerStyle = {
   display: "flex",
   alignItems: "center",
+  width: "100%",
 };
 
 const titleStyle = {
@@ -42,10 +45,10 @@ export default function AppBarLogin() {
             </Typography>
             <div style={logoStyle}>
               <Image
-                width={300}
-                height={60}
+                width={320}
+                height={55}
                 src={
-                  "https://portaleducacao.anapolis.go.gov.br/portal/wp-content/uploads/2021/04/LOGO-SECRETARIA-EDUCACAO-1.png"
+                  "https://api.anapolis.go.gov.br/apiupload/sed/educacao.png"
                 }
                 alt="Logo"
               />

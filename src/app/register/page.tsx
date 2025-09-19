@@ -1,12 +1,12 @@
 "use client";
 import AppBarLogin from "@/components/dashboard/AppBarLogin";
-import Login from "@/components/login/LoginPage";
+import UserRegister from "@/components/register/UserRegister";
 
-export default function LoginPage() {
+export default function PublicRegisterPage() {
   return (
     <div>
       <AppBarLogin />
-      <Login />
+      <UserRegister />;
     </div>
   );
 }
