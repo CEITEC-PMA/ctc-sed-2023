@@ -3,9 +3,9 @@ import * as React from "react";
 import ListItemButton from "@mui/material/ListItemButton";
 import ListItemIcon from "@mui/material/ListItemIcon";
 import ListItemText from "@mui/material/ListItemText";
-import { useRouter } from "next/navigation";
 import Icon from "@mui/material/Icon";
 import Link from "next/link";
+
 interface IListItemsProps {
   label: string;
   to: string;
@@ -13,19 +13,17 @@ interface IListItemsProps {
   isActive: boolean;
 }
 
-export default function ListItems({
-  label,
-  to,
-  icon,
-  isActive,
-}: IListItemsProps) {
-  return (
-    <Link href={to} passHref style={{ textDecoration: "none", color: "black" }}>
+const ListItems = React.forwardRef<HTMLAnchorElement, IListItemsProps>(
+  ({ label, to, icon, isActive }, ref) => {
+    return (
       <ListItemButton
-        color="black"
+        ref={ref}
+        component={Link}
+        href={to}
         style={{
           textDecoration: "none",
           backgroundColor: isActive ? "#ccc" : "",
+          color: "inherit",
         }}
       >
         <ListItemIcon>
@@ -33,6 +31,10 @@ export default function ListItems({
         </ListItemIcon>
         <ListItemText primary={label} />
       </ListItemButton>
-    </Link>
-  );
-}
+    );
+  }
+);
+
+ListItems.displayName = 'ListItems';
+
+export default ListItems;

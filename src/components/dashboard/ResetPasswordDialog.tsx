@@ -1,14 +1,14 @@
-import React, { useState, useEffect } from 'react';
-import Button from '@mui/material/Button';
-import TextField from '@mui/material/TextField';
-import Dialog from '@mui/material/Dialog';
-import DialogActions from '@mui/material/DialogActions';
-import DialogContent from '@mui/material/DialogContent';
-import DialogContentText from '@mui/material/DialogContentText';
-import DialogTitle from '@mui/material/DialogTitle';
-import Autocomplete from '@mui/material/Autocomplete';
-import CircularProgress from '@mui/material/CircularProgress';
-import { apiUrl } from '@/utils/api';
+import React, { useState, useEffect } from "react";
+import Button from "@mui/material/Button";
+import TextField from "@mui/material/TextField";
+import Dialog from "@mui/material/Dialog";
+import DialogActions from "@mui/material/DialogActions";
+import DialogContent from "@mui/material/DialogContent";
+import DialogContentText from "@mui/material/DialogContentText";
+import DialogTitle from "@mui/material/DialogTitle";
+import Autocomplete from "@mui/material/Autocomplete";
+import CircularProgress from "@mui/material/CircularProgress";
+import { apiUrl } from "@/utils/api";
 
 interface User {
   nome: string;
@@ -20,12 +20,15 @@ interface ResetPasswordDialogProps {
   handleClose: () => void;
 }
 
-export default function ResetPasswordDialog({ open, handleClose }: ResetPasswordDialogProps) {
+export default function ResetPasswordDialog({
+  open,
+  handleClose,
+}: ResetPasswordDialogProps) {
   const [selectedUser, setSelectedUser] = useState<User | null>(null);
   const [options, setOptions] = useState<User[]>([]);
   const [loading, setLoading] = useState(false);
-  const [error, setError] = useState('');
-  const [success, setSuccess] = useState('');
+  const [error, setError] = useState("");
+  const [success, setSuccess] = useState("");
   const [confirmOpen, setConfirmOpen] = useState(false);
 
   const handleSearch = async (query: string) => {
@@ -35,12 +38,15 @@ export default function ResetPasswordDialog({ open, handleClose }: ResetPassword
     }
     setLoading(true);
     try {
-      const token = localStorage.getItem('token');
-      const response = await fetch(`${apiUrl}/api/v1/usuarios/search?query=${query}`, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
+      const token = localStorage.getItem("token");
+      const response = await fetch(
+        `${apiUrl}/api/v1/usuarios/search?query=${query}`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
       if (response.ok) {
         const data = await response.json();
         setOptions(data);
@@ -55,28 +61,28 @@ export default function ResetPasswordDialog({ open, handleClose }: ResetPassword
     if (!selectedUser) return;
 
     try {
-      setError('');
-      setSuccess('');
-      const token = localStorage.getItem('token');
+      setError("");
+      setSuccess("");
+      const token = localStorage.getItem("token");
       const response = await fetch(`${apiUrl}/api/v1/usuarios/reset-password`, {
-        method: 'POST',
+        method: "POST",
         headers: {
-          'Content-Type': 'application/json',
+          "Content-Type": "application/json",
           Authorization: `Bearer ${token}`,
         },
         body: JSON.stringify({ cpf: selectedUser.cpf }),
       });
 
       if (response.ok) {
-        setSuccess('Senha resetada com sucesso!');
+        setSuccess("Senha resetada com sucesso!");
         setSelectedUser(null);
         setConfirmOpen(false);
       } else {
         const errData = await response.json();
-        setError(errData.errors || 'Erro ao resetar a senha.');
+        setError(errData.errors || "Erro ao resetar a senha.");
       }
     } catch (err: any) {
-      setError('Erro ao resetar a senha.');
+      setError("Erro ao resetar a senha.");
     }
   };
 
@@ -107,7 +113,9 @@ export default function ResetPasswordDialog({ open, handleClose }: ResetPassword
                   ...params.InputProps,
                   endAdornment: (
                     <>
-                      {loading ? <CircularProgress color="inherit" size={20} /> : null}
+                      {loading ? (
+                        <CircularProgress color="inherit" size={20} />
+                      ) : null}
                       {params.InputProps.endAdornment}
                     </>
                   ),
@@ -115,12 +123,16 @@ export default function ResetPasswordDialog({ open, handleClose }: ResetPassword
               />
             )}
           />
-          {error && <p style={{ color: 'red' }}>{error}</p>}
-          {success && <p style={{ color: 'green' }}>{success}</p>}
+          {error && <p style={{ color: "red" }}>{error}</p>}
+          {success && <p style={{ color: "green" }}>{success}</p>}
         </DialogContent>
         <DialogActions>
           <Button onClick={handleClose}>Cancelar</Button>
-          <Button onClick={() => setConfirmOpen(true)} disabled={!selectedUser}>
+          <Button
+            onClick={() => setConfirmOpen(true)}
+            variant="contained"
+            disabled={!selectedUser}
+          >
             Resetar Senha
           </Button>
         </DialogActions>
@@ -132,8 +144,12 @@ export default function ResetPasswordDialog({ open, handleClose }: ResetPassword
           <DialogContentText>
             Você tem certeza que deseja resetar a senha do usuário abaixo?
           </DialogContentText>
-          <p><b>Nome:</b> {selectedUser?.nome}</p>
-          <p><b>CPF:</b> {selectedUser?.cpf}</p>
+          <p>
+            <b>Nome:</b> {selectedUser?.nome}
+          </p>
+          <p>
+            <b>CPF:</b> {selectedUser?.cpf}
+          </p>
         </DialogContent>
         <DialogActions>
           <Button onClick={() => setConfirmOpen(false)}>Cancelar</Button>

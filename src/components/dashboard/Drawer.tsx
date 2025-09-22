@@ -8,6 +8,7 @@ import {
   ListItemIcon,
   ListItemText,
   Icon,
+  Tooltip, // Adicionado
 } from "@mui/material";
 import MuiDrawer from "@mui/material/Drawer";
 import ChevronLeftIcon from "@mui/icons-material/ChevronLeft";
@@ -27,10 +28,9 @@ import { usePathname } from "next/navigation";
 import Unauthorized from "../unauthorized";
 import React, { useState, useEffect } from "react";
 import ResetPasswordDialog from "./ResetPasswordDialog";
-import UploadFileIcon from '@mui/icons-material/UploadFile';
+import UploadFileIcon from "@mui/icons-material/UploadFile";
 import { apiUrl } from "@/utils/api";
 
-//import { mainListItems } from "./ListItems";
 interface DrawerProps {
   open: boolean;
   toggleDrawer: () => void;
@@ -114,8 +114,6 @@ export default function DrawerComponent({
     },
   }));
 
-  // const isBeforeDeadline = useTimeCheck();
-
   return (
     <Drawer variant="permanent" open={open}>
       <Toolbar
@@ -134,132 +132,132 @@ export default function DrawerComponent({
       <Divider />
 
       <List component="nav">
-        {/* {isBeforeDeadline && (
+        {user.role?.includes("super-adm") && (
+          <Tooltip title={open ? "" : "Zonas"} placement="right">
+            <ListItems
+              label="Zonas"
+              icon={<UploadFileIcon />}
+              to="/dashboard/zonas"
+              isActive={pathname === "/dashboard/zonas"}
+            />
+          </Tooltip>
+        )}
+
+        <Tooltip title={open ? "" : "Registrar Candidatura"} placement="right">
           <ListItems
-            label="Registrar Candidato"
+            label="Registrar Candidatura"
             icon={<PersonAddAlt1 />}
             to="/dashboard/candidato/register"
             isActive={pathname === "/dashboard/candidato/register"}
           />
-        )} */}
-
-        <ListItems
-          label="Registrar Candidatura"
-          icon={<PersonAddAlt1 />}
-          to="/dashboard/candidato/register"
-          isActive={pathname === "/dashboard/candidato/register"}
-        />
+        </Tooltip>
 
         {isCandidato && (
-          <ListItems
-            label="Minha Candidatura"
-            icon={<DescriptionIcon />}
-            to="/dashboard/minha-candidatura"
-            isActive={pathname === "/dashboard/minha-candidatura"}
-          />
+          <Tooltip title={open ? "" : "Minha Candidatura"} placement="right">
+            <ListItems
+              label="Minha Candidatura"
+              icon={<DescriptionIcon />}
+              to="/dashboard/minha-candidatura"
+              isActive={pathname === "/dashboard/minha-candidatura"}
+            />
+          </Tooltip>
         )}
 
-        <ListItems
-          label="Liberar voto"
-          icon={<HowToVoteIcon />}
-          to="/dashboard/liberavoto"
-          isActive={
-            pathname === "/dashboard/liberavoto" ||
-            pathname.startsWith("/dashboard/votacao")
-          }
-        />
-
-        <ListItems
-          label="Lista de Candidatos"
-          icon={<AccountBox />}
-          to="/dashboard/data"
-          isActive={
-            pathname === "/dashboard/data" ||
-            pathname.startsWith("/dashboard/candidato/checklist/")
-          }
-        />
-
-        {/* <ListItems
-          label="Alunos"
-          icon={<Face6Icon />}
-          to="/dashboard/alunos"
-          isActive={pathname === "/dashboard/alunos"}
-        />
-        <ListItems
-          label="Funcionários"
-          icon={<BadgeIcon />}
-          to="/dashboard/funcionarios"
-          isActive={pathname === "/dashboard/funcionarios"}
-        /> */}
-
-        {user.role?.includes("super-adm") ? (
+        <Tooltip title={open ? "" : "Liberar voto"} placement="right">
           <ListItems
-            label="Listas e Atas"
-            icon={<DescriptionIcon />}
-            to="/dashboard/buscaResultado"
+            label="Liberar voto"
+            icon={<HowToVoteIcon />}
+            to="/dashboard/liberavoto"
             isActive={
-              pathname === "/dashboard/buscaResultado" ||
-              pathname.startsWith("/dashboard/atas/atasResultado")
+              pathname === "/dashboard/liberavoto" ||
+              pathname.startsWith("/dashboard/votacao")
             }
           />
-        ) : (
+        </Tooltip>
+
+        <Tooltip title={open ? "" : "Lista de Candidatos"} placement="right">
           <ListItems
-            label="Listas e Atas"
-            icon={<DescriptionIcon />}
-            to="/dashboard/atas"
-            isActive={pathname === "/dashboard/atas"}
+            label="Lista de Candidatos"
+            icon={<AccountBox />}
+            to="/dashboard/data"
+            isActive={
+              pathname === "/dashboard/data" ||
+              pathname.startsWith("/dashboard/candidato/checklist/")
+            }
           />
+        </Tooltip>
+
+        {user.role?.includes("super-adm") ? (
+          <Tooltip title={open ? "" : "Listas e Atas"} placement="right">
+            <ListItems
+              label="Listas e Atas"
+              icon={<DescriptionIcon />}
+              to="/dashboard/buscaResultado"
+              isActive={
+                pathname === "/dashboard/buscaResultado" ||
+                pathname.startsWith("/dashboard/atas/atasResultado")
+              }
+            />
+          </Tooltip>
+        ) : (
+          <Tooltip title={open ? "" : "Listas e Atas"} placement="right">
+            <ListItems
+              label="Listas e Atas"
+              icon={<DescriptionIcon />}
+              to="/dashboard/atas"
+              isActive={pathname === "/dashboard/atas"}
+            />
+          </Tooltip>
         )}
 
         {user.role?.includes("super-adm") ? (
-          <ListItems
-            label="Apuração dos votos"
-            icon={<PollIcon />}
-            to="/dashboard/buscaApuracao"
-            isActive={
-              pathname === "/dashboard/buscaApuracao" ||
-              pathname.startsWith("/dashboard/apuracao/")
-            }
-          />
+          <Tooltip title={open ? "" : "Apuração dos votos"} placement="right">
+            <ListItems
+              label="Apuração dos votos"
+              icon={<PollIcon />}
+              to="/dashboard/buscaApuracao"
+              isActive={
+                pathname === "/dashboard/buscaApuracao" ||
+                pathname.startsWith("/dashboard/apuracao/")
+              }
+            />
+          </Tooltip>
         ) : (
-          <ListItems
-            label="Apuração dos votos"
-            icon={<PollIcon />}
-            to={`/dashboard/apuracao/${user._id}`}
-            isActive={
-              pathname === "/dashboard/buscaApuracao" ||
-              pathname.startsWith("/dashboard/apuracao/")
-            }
-          />
+          <Tooltip title={open ? "" : "Apuração dos votos"} placement="right">
+            <ListItems
+              label="Apuração dos votos"
+              icon={<PollIcon />}
+              to={`/dashboard/apuracao/${user._id}`}
+              isActive={
+                pathname === "/dashboard/buscaApuracao" ||
+                pathname.startsWith("/dashboard/apuracao/")
+              }
+            />
+          </Tooltip>
         )}
 
         {user.role?.includes("super-adm") && (
-          <ListItems
-            label="Lista Completa - ADM"
-            icon={<GroupIcon />}
-            to="/dashboard/dataAdm"
-            isActive={pathname === "/dashboard/dataAdm"}
-          />
+          <Tooltip title={open ? "" : "Lista Completa - ADM"} placement="right">
+            <ListItems
+              label="Lista Completa - ADM"
+              icon={<GroupIcon />}
+              to="/dashboard/dataAdm"
+              isActive={pathname === "/dashboard/dataAdm"}
+            />
+          </Tooltip>
         )}
 
         {user.role?.includes("super-adm") && (
-          <ListItemButton onClick={handleOpenResetDialog}>
-            <ListItemIcon>
-              <Icon>
-                <RotateLeftIcon />
-              </Icon>
-            </ListItemIcon>
-            <ListItemText primary="Redefinição de senha" />
-          </ListItemButton>
-        )}
-
-        {user.role?.includes("super-adm") && (
-          <ListItems
-            label="Povoar Zonas"
-            icon={<UploadFileIcon />}
-            to="/dashboard/seed-zonas"
-            isActive={pathname === "/dashboard/seed-zonas"}
-          />
+          <Tooltip title={open ? "" : "Redefinição de senha"} placement="right">
+            <ListItemButton onClick={handleOpenResetDialog}>
+              <ListItemIcon>
+                <Icon>
+                  <RotateLeftIcon />
+                </Icon>
+              </ListItemIcon>
+              <ListItemText primary="Redefinição de senha" />
+            </ListItemButton>
+          </Tooltip>
         )}
       </List>
       <ResetPasswordDialog
