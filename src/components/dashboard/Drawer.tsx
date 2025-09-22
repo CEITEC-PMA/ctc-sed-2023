@@ -1,4 +1,14 @@
-import { Divider, IconButton, List, Toolbar, styled, ListItemButton, ListItemIcon, ListItemText, Icon } from "@mui/material";
+import {
+  Divider,
+  IconButton,
+  List,
+  Toolbar,
+  styled,
+  ListItemButton,
+  ListItemIcon,
+  ListItemText,
+  Icon,
+} from "@mui/material";
 import MuiDrawer from "@mui/material/Drawer";
 import ChevronLeftIcon from "@mui/icons-material/ChevronLeft";
 import { PersonAddAlt1, AccountBox } from "@mui/icons-material/";
@@ -7,7 +17,6 @@ import RotateLeftIcon from "@mui/icons-material/RotateLeft";
 import ListItems from "./listItems";
 import Face6Icon from "@mui/icons-material/Face6";
 import { useUserContext } from "@/userContext";
-import useTimeCheck from "@/hooks/useTimeCheck";
 import GroupIcon from "@mui/icons-material/Group";
 import HowToVoteIcon from "@mui/icons-material/HowToVote";
 import PollIcon from "@mui/icons-material/Poll";
@@ -16,8 +25,10 @@ import DescriptionIcon from "@mui/icons-material/Description";
 import BadgeIcon from "@mui/icons-material/Badge";
 import { usePathname } from "next/navigation";
 import Unauthorized from "../unauthorized";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import ResetPasswordDialog from "./ResetPasswordDialog";
+import UploadFileIcon from '@mui/icons-material/UploadFile';
+import { apiUrl } from "@/utils/api";
 
 //import { mainListItems } from "./ListItems";
 interface DrawerProps {
@@ -34,6 +45,7 @@ export default function DrawerComponent({
   const { user } = useUserContext();
   const pathname = usePathname();
   const [resetDialogOpen, setResetDialogOpen] = useState(false);
+  const [isCandidato, setIsCandidato] = useState(false);
 
   const handleOpenResetDialog = () => {
     setResetDialogOpen(true);
@@ -42,6 +54,39 @@ export default function DrawerComponent({
   const handleCloseResetDialog = () => {
     setResetDialogOpen(false);
   };
+
+  useEffect(() => {
+    const checkCandidatura = async () => {
+      const token = localStorage.getItem("token");
+      if (user?._id && token) {
+        try {
+          const response = await fetch(
+            `${apiUrl}/api/v1/candidato/by-usuario/${user._id}`,
+            {
+              headers: {
+                Authorization: `Bearer ${token}`,
+              },
+            }
+          );
+          if (response.ok) {
+            const data = await response.json();
+            if (data.candidato) {
+              setIsCandidato(true);
+            } else {
+              setIsCandidato(false);
+            }
+          } else {
+            setIsCandidato(false);
+          }
+        } catch (error) {
+          console.error("Error checking candidate status:", error);
+          setIsCandidato(false);
+        }
+      }
+    };
+
+    checkCandidatura();
+  }, [user?._id]);
 
   const Drawer = styled(MuiDrawer, {
     shouldForwardProp: (prop) => prop !== "open",
@@ -99,11 +144,20 @@ export default function DrawerComponent({
         )} */}
 
         <ListItems
-          label="Registrar Candidato"
+          label="Registrar Candidatura"
           icon={<PersonAddAlt1 />}
           to="/dashboard/candidato/register"
           isActive={pathname === "/dashboard/candidato/register"}
         />
+
+        {isCandidato && (
+          <ListItems
+            label="Minha Candidatura"
+            icon={<DescriptionIcon />}
+            to="/dashboard/minha-candidatura"
+            isActive={pathname === "/dashboard/minha-candidatura"}
+          />
+        )}
 
         <ListItems
           label="Liberar voto"
@@ -189,15 +243,29 @@ export default function DrawerComponent({
         )}
 
         {user.role?.includes("super-adm") && (
-           <ListItemButton onClick={handleOpenResetDialog}>
+          <ListItemButton onClick={handleOpenResetDialog}>
             <ListItemIcon>
-              <Icon><RotateLeftIcon /></Icon>
+              <Icon>
+                <RotateLeftIcon />
+              </Icon>
             </ListItemIcon>
             <ListItemText primary="Redefinição de senha" />
           </ListItemButton>
         )}
+
+        {user.role?.includes("super-adm") && (
+          <ListItems
+            label="Povoar Zonas"
+            icon={<UploadFileIcon />}
+            to="/dashboard/seed-zonas"
+            isActive={pathname === "/dashboard/seed-zonas"}
+          />
+        )}
       </List>
-      <ResetPasswordDialog open={resetDialogOpen} handleClose={handleCloseResetDialog} />
+      <ResetPasswordDialog
+        open={resetDialogOpen}
+        handleClose={handleCloseResetDialog}
+      />
     </Drawer>
   );
 }

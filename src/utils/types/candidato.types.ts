@@ -37,8 +37,6 @@ export interface Doc {
 }
 
 export interface Zona {
-  role: string[];
-  acesso: number;
   hash: string;
   salt: string;
   deletado: boolean;

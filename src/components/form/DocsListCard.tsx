@@ -15,7 +15,6 @@ import { apiUrl } from "@/utils/api";
 import { RotatingLines } from "react-loader-spinner";
 import FindInPageIcon from "@mui/icons-material/FindInPage";
 import AttachFileIcon from "@mui/icons-material/AttachFile";
-import useTimeCheck from "@/hooks/useTimeCheck";
 import { Candidato } from "@/utils/types/candidato.types";
 
 interface Doc {
@@ -48,7 +47,7 @@ export default function DocslistCard({
   linkDoc: string;
   candidato: Candidato;
 }) {
-  const isBeforeDeadline = useTimeCheck();
+  // const isBeforeDeadline = useTimeCheck();
   const isSmallScreen = useMediaQuery("(max-width: 600px)");
   const router = useRouter();
   const [isLoading, setIsLoading] = useState(false);
@@ -105,7 +104,7 @@ export default function DocslistCard({
   }
 
   return (
-    <Grid item xs={12} sm={6} md={4} lg={3}>
+    <Grid>
       <Paper elevation={2} sx={{ padding: "6px", margin: "12px" }}>
         <Box
           display="flex"
@@ -150,21 +149,20 @@ export default function DocslistCard({
                 visible={true}
               />
             )}
-            {isBeforeDeadline && (
-              <Button
-                component="label"
-                color={buttonColor}
-                variant="contained"
-                startIcon={<CloudUploadIcon />}
-                sx={{ whiteSpace: "nowrap" }}
-              >
-                Escolher Arquivo
-                <VisuallyHiddenInput
-                  onChange={(e) => handleOnChange(e)}
-                  type="file"
-                />
-              </Button>
-            )}
+
+            <Button
+              component="label"
+              color={buttonColor}
+              variant="contained"
+              startIcon={<CloudUploadIcon />}
+              sx={{ whiteSpace: "nowrap" }}
+            >
+              Escolher Arquivo
+              <VisuallyHiddenInput
+                onChange={(e) => handleOnChange(e)}
+                type="file"
+              />
+            </Button>
           </Box>
         </Box>
       </Paper>
